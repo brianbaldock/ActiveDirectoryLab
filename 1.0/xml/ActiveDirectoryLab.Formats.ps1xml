@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<Configuration>
+    <ViewDefinitions>
+    <Configuration>
+    <ViewDefinitions>
+        <!--ActiveDirectoryLab.YourFunctionName-->
+        <View>
+            <Name>ActiveDirectoryLab.YourFunctionName</Name>
+            <ViewSelectedBy>
+                <TypeName>ActiveDirectoryLab.YourFunctionName</TypeName>
+            </ViewSelectedBy>
+            <TableControl>
+                <TableHeaders>
+                    <TableColumnHeader>
+                        <Label>One</Label>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Two</Label>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Three</Label>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Four</Label>
+                    </TableColumnHeader>
+                    <TableColumnHeader>
+                        <Label>Five</Label>
+                    </TableColumnHeader>
+                </TableHeaders>
+                <TableRowEntries>
+                    <TableRowEntry>
+                        <TableColumnItems>
+                            <TableColumnItem>
+                                <PropertyName>One</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Two</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Three</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Four</PropertyName>
+                            </TableColumnItem>
+                            <TableColumnItem>
+                                <PropertyName>Five</PropertyName>
+                            </TableColumnItem>
+                        </TableColumnItems>
+                    </TableRowEntry>
+                </TableRowEntries>
+            </TableControl>
+        </View>
+    </ViewDefinitions>
+</Configuration>
