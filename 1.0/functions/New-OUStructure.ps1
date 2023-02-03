@@ -22,38 +22,46 @@
         [Parameter(Mandatory = $True)]
         [String]$CompanyName,
         [String]$DomDN,
-        [String]$OULayout,
+        [array]$OULayout,
         [String]$LogLocation,
         [String]$LogFile
     )
     process {
         if(!(Get-ADOrganizationalUnit -Filter {Name -like $CompanyName})){
             try{
-                New-ADOrganizationalUnit -DisplayName "$($CompanyName)" -Name "$($CompanyName)" -Path $DomDN.DistinguishedName
+                New-ADOrganizationalUnit -DisplayName "$($CompanyName)" -Name "$($CompanyName)" -Path $DomDN
                 foreach($OU in $OULayout){
                     if(!(Get-ADOrganizationalUnit -Filter {Name -like $OU})){
                         try{
-                            New-ADOrganizationalUnit -DisplayName "$($OU)" -Name "$($OU)" -Path "OU=$($CompanyName),$($DomDN.DistinguishedName)"
-                            if!(Get-ADOrganizationalUnit -Filter {Name -like $OU}){
-                                .\Save-Output -LogLocation $LogLocation -LogFile $LogFile -InputString "$(.\Get-TimeStamp.ps1) - Error attempting to create the OU $($OU) under $($CompanyName)"
-                                Write-Output "Error attempting to create the $($OU) under $($CompanyName)"
+                            New-ADOrganizationalUnit -DisplayName "$($OU)" -Name "$($OU)" -Path "OU=$($CompanyName),$($DomDN)"
+                            if(!(Get-ADOrganizationalUnit -Filter {Name -like $OU})){
+                                Save-Output -LogLocation $LogLocation -LogFile $LogFile -InputString "$(Get-TimeStamp) - Error attempting to create the OU $($OU) under $($CompanyName)"
+                                Write-Verbose "Error attempting to create the $($OU) under $($CompanyName)"
                             }
                             else{
-                                .\Save-Output -LogLocation $LogLocation -LogFile $LogFile -InputString "$(.\Get-TimeStamp.ps1) - Created the OU $($OU) under $($CompanyName)"
-                                Write-Output "Succesfully created the OU $($OU) under $($CompanyName)"
+                                Save-Output -LogLocation $LogLocation -LogFile $LogFile -InputString "$(Get-TimeStamp) - Created the OU $($OU) under OU=$($CompanyName),$($DomDN)"
+                                Write-Verbose "Succesfully created the OU $($OU) under OU=$($CompanyName),$($DomDN))"
                             }
                         }
                         catch{
-                            .\Save-Output -LogLocation $LogLocation -LogFile $LogFile -InputString "$(.\Get-TimeStamp.ps1) - Error attempting to create the OU $($OU) under $($CompanyName)"
-                            Write-Output "Error attempting to create the OU $($OU) under $($CompanyName)"
+                            Save-Output -LogLocation $LogLocation -LogFile $LogFile -InputString "$(Get-TimeStamp) - Error attempting to create the OU $($OU) under OU=$($CompanyName),$($DomDN)"
+                            Write-Verbose "Error attempting to create the OU $($OU) under OU=$($CompanyName),$($DomDN)"
                         }
+                    }
+                    else{
+                        Save-Output -LogLocation $LogLocation -LogFile $LogFile -InputString "$(Get-TimeStamp) - OU=$($OU),$($CompanyName),$($DomDN) already exists."
+                        Write-Verbose "OU=$($OU),$($CompanyName),$($DomDN) already exists."
                     }
                 }
             }
             catch{
-                .\Save-Output -LogLocation $LogLocation -LogFile $LogFile -InputString "$(.\Get-TimeStamp.ps1) - Error attempting to create a new root OU structure based on $($CompanyName)"
-                Write-Output "Error attempting to create a new root OU structure based on $($CompanyName)"
+                Save-Output -LogLocation $LogLocation -LogFile $LogFile -InputString "$(Get-TimeStamp) - Error attempting to create a new root OU structure OU=$($CompanyName),$($DomDN)"
+                Write-Verbose "Error attempting to create a new root OU structure OU=$($CompanyName),$($DomDN)"
             }
+        }
+        else{
+            Save-Output -LogLocation $LogLocation -LogFile $LogFile -InputString "$(Get-TimeStamp) - OU=$($CompanyName),$($DomDN) already exists."
+            Write-Verbose "OU=$($CompanyName),$($DomDN) already exists"
         }
     }
 }
