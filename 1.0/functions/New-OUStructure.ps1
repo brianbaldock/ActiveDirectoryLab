@@ -1,40 +1,54 @@
-﻿function New-OUStructure {
-    <#
-        .SYNOPSIS
-            Create the OU structure for the lab
-        .DESCRIPTION
-            Tests for existance of an OU Structure and generates a pre-formatted OU structure for the lab if none is found.
-        .PARAMETER companyName
-            The name of the company to be used for the OU Structure
-        .PARAMETER domainDN
-            The DN of the domain to be used for the OU Structure
-        .PARAMETER ouLayout
-            The OU Structure to be used for the lab, formatted as comma seperated string array
-        .PARAMETER LogLocation
-            The location to save the log file
-        .EXAMPLE
-            New-OUStructure -companyName "Lab" -domainDN $domainDN -ouLayout $ouLayout -LogLocation $LogLocation -logFile $logFile
-        .NOTES
-            Internal function
-    #>
-    [CmdletBinding()]
+﻿
+<#
+    .SYNOPSIS
+        Create the OU structure for the lab
+    .DESCRIPTION
+        Tests for existance of an OU Structure and generates a pre-formatted OU structure for the lab if none is found.
+    .PARAMETER companyName
+        The name of the company to be used for the OU Structure
+    .PARAMETER domainDN
+        The DN of the domain to be used for the OU Structure
+    .PARAMETER ouLayout
+        The OU Structure to be used for the lab, formatted as comma seperated string array
+    .PARAMETER logLocation
+        The location to save the log file
+    .EXAMPLE
+        New-OUStructure -companyName "Lab" -domainDN $domainDN -ouLayout $ouLayout -logLocation $logLocation -logFile $logFile
+    .NOTES
+        Internal function
+#>
+
+[CmdletBinding()]
     param(
-        [Parameter(Mandatory = $True)]
+        [Parameter(Mandatory = $True,
+        HelpMessage = "The name of the company to be used for the OU Structure")]
         [String] $companyName,
+
+        [Parameter(Mandatory = $True,
+        HelpMessage = "The distinguished name of the domain to be used for the OU Structure")]
         [String] $domainDN,
+
+        [Parameter(Mandatory = $True,
+        HelpMessage = "The OU Structure to be used for the lab, formatted as comma seperated string array")]
         [array] $ouLayout,
+
+        [Parameter(Mandatory = $True,
+        HelpMessage = "The location to save the log file")]
         [String] $logLocation,
+
+        [Parameter(Mandatory = $True,
+        HelpMessage = "The name of the log file")]
         [String] $logFile
     )
     process {
-        if(!(Get-ADOrganizationalUnit -Filter {Name -like $companyName})){
+        if(!(Test-OUStructure -ouName $companyName)){
             try{
                 New-ADOrganizationalUnit -DisplayName "$($companyName)" -Name "$($companyName)" -Path $domainDN
                 foreach($OU in $ouLayout){
-                    if(!(Get-ADOrganizationalUnit -Filter {Name -like $OU})){
+                    if(!(Test-OUStructure -ouName $OU)){
                         try{
                             New-ADOrganizationalUnit -DisplayName "$($OU)" -Name "$($OU)" -Path "OU=$($companyName),$($domainDN)"
-                            if(Get-ADOrganizationalUnit -Filter {Name -like $OU}){
+                            if(Test-OUStructure -ouName $OU){
                                 Save-Output -logLocation $logLocation -logFile $logFile -InputString "$(Get-TimeStamp) - Created the OU $($OU) under OU=$($companyName),$($domainDN)"
                                 Write-Verbose "Succesfully created the OU $($OU) under OU=$($companyName),$($domainDN))"
                             }
@@ -64,4 +78,3 @@
             Write-Verbose "OU=$($companyName),$($domainDN) already exists"
         }
     }
-}

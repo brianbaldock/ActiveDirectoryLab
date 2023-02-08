@@ -69,7 +69,7 @@ Description = 'Use this module to generate a new active directory lab environmen
 # NestedModules = @()
 
 # Functions to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no functions to export.
-FunctionsToExport = 'Get-TimeStamp','New-OUStructure','Save-Output','New-RandomPassword'
+FunctionsToExport = 'Get-TimeStamp','New-OUStructure','Save-Output','New-RandomPassword','Invoke-UserCreation',"Test-OUStructure","Test-CSVPaths"
 
 # Cmdlets to export from this module, for best performance, do not use wildcards and do not delete the entry, use an empty array if there are no cmdlets to export.
 CmdletsToExport = '*'
